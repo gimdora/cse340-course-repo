@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,4 +13,23 @@
             <li><a href="/organizations">Organizations</a></li>
             <li><a href="/projects">Projects</a></li>
         </ul>
+    </nav> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="nav-link <%= path === '/' ? 'active' : '' %>" href="/">Home</a>
+      <a class="nav-link <%= path === '/organizations' ? 'active' : '' %>" href="/organizations">Organizations</a>
+      <a class="nav-link <%= path === '/projects' ? 'active' : '' %>" href="/projects">Projects</a>
+      <a class="nav-link <%= path === '/categories' ? 'active' : '' %>" href="/categories">Categories</a>
     </nav>
+  </header>
