@@ -1,19 +1,25 @@
 <%- include('partials/header') %>
 
-<main>
-    <h1><%= title %></h1>
+    <main>
+        <h1>
+            <%= title %>
+        </h1>
 
-    <h2>Upcoming Service Projects</h2>
-    <p>
-        Our mission is to promote service across the world by connecting volunteers
-        with service opportunities in their community.
-    </p>
+        <h2>Service Projects</h2>
+        <p>Here are some service projects from the database:</p>
 
-    <ul>
-        <li>Park Cleanup - Join us to clean up local parks and make them beautiful!</li>
-        <li>Food Drive - Help collect and distribute food to those in need.</li>
-        <li>Community Tutoring - Volunteer to tutor students in various subjects.</li>
-    </ul>
-</main>
+        <ul class="project-list">
+            <% projects.forEach(project=> { %>
+                <li class="project-item">
+                    <strong>
+                        <%= project.name %>
+                    </strong>
+                    <p>
+                        <%= project.description %>
+                    </p>
+                </li>
+                <% }) %>
+        </ul>
+    </main>
 
-<%- include('partials/footer') %>
+    <%- include('partials/footer') %>

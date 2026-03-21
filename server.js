@@ -1,10 +1,9 @@
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllCategories } from './src/models/categories.js';
 import 'dotenv/config';
+import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import express from 'express';
 import { testConnection } from './src/models/db.js';
+import router from './src/controllers/routes.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -17,44 +16,60 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// view engine & view directory
+// Set EJS as the templating engine
 app.set('view engine', 'ejs');
+
+// Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src', 'views'));
 
-// static file
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware to log all incoming requests
+app.use((req, res, next) => {
+    if (NODE_ENV === 'development') {
+        console.log(`${req.method} ${req.url}`);
+    }
+    next();
+});
 
-// make current path available in templates
+// Middleware to make NODE_ENV available to all templates
+app.use((req, res, next) => {
+    res.locals.NODE_ENV = NODE_ENV;
+    next();
+});
+
+// Middleware to make the current path available to all templates
 app.use((req, res, next) => {
     res.locals.path = req.path;
     next();
 });
 
-/**
- * Routes
- */
-app.get('/', async (req, res) => {
-    const title = 'Home';
-    res.render('home', { title });
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Use the imported router to handle routes
+app.use(router);
+
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
 });
 
-app.get('/organizations', async (req, res) => {
-    const organizations = await getAllOrganizations();
-    const title = 'Our Partner Organizations';
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
 
-    res.render('organizations', { title, organizations });
-});
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
 
-app.get('/projects', async (req, res) => {
-    const title = 'Service Projects';
-    res.render('projects', { title });
-});
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: NODE_ENV === 'development' ? err.stack : null
+    };
 
-app.get('/categories', async (req, res) => {
-    const categories = await getAllCategories();
-    const title = 'Categories';
-
-    res.render('categories', { title, categories });
+    res.status(status).render(`errors/${template}`, context);
 });
 
 app.listen(PORT, async () => {
