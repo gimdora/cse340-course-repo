@@ -2,8 +2,14 @@ import db from './db.js';
 
 const getAllOrganizations = async () => {
     const query = `
-        SELECT organization_id, name, description, contact_email, logo_filename
-        FROM public.organization;
+        SELECT
+            organization_id,
+            name,
+            description,
+            contact_email,
+            logo_filename
+        FROM public.organization
+        ORDER BY organization_id;
     `;
 
     const result = await db.query(query);
@@ -18,7 +24,7 @@ const getOrganizationDetails = async (organizationId) => {
             description,
             contact_email,
             logo_filename
-        FROM organization
+        FROM public.organization
         WHERE organization_id = $1;
     `;
 

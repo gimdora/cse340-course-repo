@@ -11,7 +11,9 @@
     <ul class="category-list">
       <% categories.forEach(category=> { %>
         <li class="category-item">
-          <%= category.name %>
+          <a href="/category/<%= category.category_id %>">
+            <%= category.name %>
+          </a>
         </li>
         <% }) %>
     </ul>

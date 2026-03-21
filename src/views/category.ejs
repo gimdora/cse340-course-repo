@@ -5,20 +5,21 @@
             <%= title %>
         </h1>
 
-        <h2>Service Projects</h2>
-        <p>Here are the next five service projects from the database:</p>
+        <h2>
+            <%= categoryDetails.name %>
+        </h2>
+
+        <h3>Service Projects</h3>
 
         <% if (projects.length===0) { %>
-            <p>No service projects are available yet.</p>
+            <p>No service projects are assigned to this category yet.</p>
             <% } else { %>
-                <ul class="project-list">
+                <ul>
                     <% projects.forEach(project=> { %>
-                        <li class="project-item">
-                            <strong>
-                                <a href="/project/<%= project.project_id %>">
-                                    <%= project.name %>
-                                </a>
-                            </strong>
+                        <li>
+                            <a href="/project/<%= project.project_id %>">
+                                <%= project.name %>
+                            </a>
                             -
                             <a href="/organization/<%= project.organization_id %>">
                                 <%= project.organization_name %>

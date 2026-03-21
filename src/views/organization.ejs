@@ -21,18 +21,22 @@
 
         <h3>Service Projects</h3>
 
-        <ul>
-            <% projects.forEach(project=> { %>
-                <li>
-                    <a href="/project/<%= project.project_id %>">
-                        <%= project.name %>
-                    </a>
-                    <p>
-                        <%= project.description %>
-                    </p>
-                </li>
-                <% }) %>
-        </ul>
+        <% if (projects.length===0) { %>
+            <p>No service projects are available for this organization yet.</p>
+            <% } else { %>
+                <ul>
+                    <% projects.forEach(project=> { %>
+                        <li>
+                            <a href="/project/<%= project.project_id %>">
+                                <%= project.name %>
+                            </a>
+                            <p>
+                                <%= project.description %>
+                            </p>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
     </main>
 
     <%- include('partials/footer') %>
