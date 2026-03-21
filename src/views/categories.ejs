@@ -1,17 +1,20 @@
 <%- include('partials/header') %>
 
-<main>
-  <h1><%= title %></h1>
+  <main>
+    <h1>
+      <%= title %>
+    </h1>
 
-  <h2>Service Project Categories</h2>
-  <p>Select a category to explore related service opportunities.</p>
+    <h2>Service Project Categories</h2>
+    <p>Here are the categories from the database:</p>
 
-  <ul class="category-list">
-    <li class="category-item">Environmental</li>
-    <li class="category-item">Educational</li>
-    <li class="category-item">Community Service</li>
-    <li class="category-item">Health and Wellness</li>
-  </ul>
-</main>
+    <ul class="category-list">
+      <% categories.forEach(category=> { %>
+        <li class="category-item">
+          <%= category.name %>
+        </li>
+        <% }) %>
+    </ul>
+  </main>
 
-<%- include('partials/footer') %>
+  <%- include('partials/footer') %>
