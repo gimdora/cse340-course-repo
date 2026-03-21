@@ -1,4 +1,5 @@
-import { getAllOrganizations } from '../models/organizations.js';
+import { getAllOrganizations, getOrganizationDetails } from '../models/organizations.js';
+import { getProjectsByOrganizationId } from '../models/projects.js';
 
 const showOrganizationsPage = async (req, res, next) => {
     try {
@@ -11,4 +12,23 @@ const showOrganizationsPage = async (req, res, next) => {
     }
 };
 
-export { showOrganizationsPage };
+const showOrganizationDetailsPage = async (req, res, next) => {
+    try {
+        const organizationId = req.params.id;
+        const organizationDetails = await getOrganizationDetails(organizationId);
+        const projects = await getProjectsByOrganizationId(organizationId);
+
+        if (!organizationDetails) {
+            const err = new Error('Organization not found');
+            err.status = 404;
+            return next(err);
+        }
+
+        const title = 'Organization Details';
+        res.render('organization', { title, organizationDetails, projects });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export { showOrganizationsPage, showOrganizationDetailsPage };
