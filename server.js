@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
+import session from 'express-session';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { testConnection } from './src/models/db.js';
 import router from './src/controllers/routes.js';
+import flash from './src/middleware/flash.js';
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -21,6 +23,17 @@ app.set('view engine', 'ejs');
 
 // Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src', 'views'));
+
+// Set up session management
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 }
+}));
+
+// Use flash message middleware
+app.use(flash);
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {

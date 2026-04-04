@@ -22,3 +22,18 @@
         href="/categories">Categories</a>
     </nav>
   </header>
+
+  <% const messages=flash(); %>
+    <% const hasMessages=Object.keys(messages).some(type=> messages[type].length > 0); %>
+
+      <% if (hasMessages) { %>
+        <div class="flash-wrap">
+          <% Object.keys(messages).forEach(type=> { %>
+            <% messages[type].forEach(msg=> { %>
+              <div class="alert alert-<%= type %>">
+                <%= msg %>
+              </div>
+              <% }) %>
+                <% }) %>
+        </div>
+        <% } %>
