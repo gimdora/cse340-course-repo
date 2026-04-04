@@ -1,7 +1,8 @@
 import {
     getAllOrganizations,
     getOrganizationDetails,
-    createOrganization
+    createOrganization,
+    updateOrganization
 } from '../models/organizations.js';
 import { getProjectsByOrganizationId } from '../models/projects.js';
 import { body, validationResult } from 'express-validator';
@@ -104,10 +105,61 @@ const processNewOrganizationForm = async (req, res, next) => {
     }
 };
 
+const showEditOrganizationForm = async (req, res, next) => {
+    try {
+        const organizationId = req.params.id;
+        const organizationDetails = await getOrganizationDetails(organizationId);
+
+        if (!organizationDetails) {
+            const err = new Error('Organization not found');
+            err.status = 404;
+            return next(err);
+        }
+
+        const title = 'Edit Organization';
+        res.render('edit-organization', { title, organizationDetails });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const processEditOrganizationForm = async (req, res, next) => {
+    try {
+        const results = validationResult(req);
+
+        if (!results.isEmpty()) {
+            results.array().forEach((error) => {
+                req.flash('error', error.msg);
+            });
+
+            return res.redirect('/edit-organization/' + req.params.id);
+        }
+
+        const organizationId = req.params.id;
+        const { name, description, contactEmail, logoFilename } = req.body;
+
+        await updateOrganization(
+            organizationId,
+            name,
+            description,
+            contactEmail,
+            logoFilename
+        );
+
+        req.flash('success', 'Organization updated successfully!');
+
+        res.redirect(`/organization/${organizationId}`);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export {
     showOrganizationsPage,
     showOrganizationDetailsPage,
     showNewOrganizationForm,
     processNewOrganizationForm,
+    showEditOrganizationForm,
+    processEditOrganizationForm,
     organizationValidation
 };
