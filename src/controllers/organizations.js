@@ -4,6 +4,36 @@ import {
     createOrganization
 } from '../models/organizations.js';
 import { getProjectsByOrganizationId } from '../models/projects.js';
+import { body, validationResult } from 'express-validator';
+
+const organizationValidation = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Organization name is required')
+        .bail()
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Organization name must be between 3 and 150 characters')
+        .escape(),
+
+    body('description')
+        .trim()
+        .notEmpty()
+        .withMessage('Organization description is required')
+        .bail()
+        .isLength({ max: 500 })
+        .withMessage('Organization description cannot exceed 500 characters')
+        .escape(),
+
+    body('contactEmail')
+        .trim()
+        .notEmpty()
+        .withMessage('Contact email is required')
+        .bail()
+        .isEmail()
+        .withMessage('Please provide a valid email address')
+        .normalizeEmail()
+];
 
 const showOrganizationsPage = async (req, res, next) => {
     try {
@@ -46,6 +76,16 @@ const showNewOrganizationForm = async (req, res, next) => {
 
 const processNewOrganizationForm = async (req, res, next) => {
     try {
+        const results = validationResult(req);
+
+        if (!results.isEmpty()) {
+            results.array().forEach((error) => {
+                req.flash('error', error.msg);
+            });
+
+            return res.redirect('/new-organization');
+        }
+
         const { name, description, contactEmail } = req.body;
         const logoFilename = 'placeholder-logo.png';
 
@@ -68,5 +108,6 @@ export {
     showOrganizationsPage,
     showOrganizationDetailsPage,
     showNewOrganizationForm,
-    processNewOrganizationForm
+    processNewOrganizationForm,
+    organizationValidation
 };
