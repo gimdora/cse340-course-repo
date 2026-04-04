@@ -7,12 +7,13 @@ const getAllProjects = async () => {
             sp.organization_id,
             sp.name,
             sp.description,
+            sp.location,
+            sp."date" AS date,
             o.name AS organization_name
         FROM public.service_project sp
         JOIN public.organization o
             ON sp.organization_id = o.organization_id
-        ORDER BY sp.project_id
-        LIMIT 5;
+        ORDER BY sp.project_id DESC;
     `;
 
     const result = await db.query(query);
@@ -25,7 +26,9 @@ const getProjectsByOrganizationId = async (organizationId) => {
             project_id,
             organization_id,
             name,
-            description
+            description,
+            location,
+            "date" AS date
         FROM public.service_project
         WHERE organization_id = $1
         ORDER BY project_id;
@@ -44,6 +47,8 @@ const getProjectDetails = async (projectId) => {
             sp.organization_id,
             sp.name,
             sp.description,
+            sp.location,
+            sp."date" AS date,
             o.name AS organization_name
         FROM public.service_project sp
         JOIN public.organization o
@@ -75,9 +80,27 @@ const getCategoriesByProjectId = async (projectId) => {
     return result.rows;
 };
 
+const createProject = async (title, description, location, date, organizationId) => {
+    const query = `
+        INSERT INTO public.service_project (name, description, location, "date", organization_id)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING project_id;
+    `;
+
+    const query_params = [title, description, location, date, organizationId];
+    const result = await db.query(query, query_params);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create project');
+    }
+
+    return result.rows[0].project_id;
+};
+
 export {
     getAllProjects,
     getProjectsByOrganizationId,
     getProjectDetails,
-    getCategoriesByProjectId
+    getCategoriesByProjectId,
+    createProject
 };
