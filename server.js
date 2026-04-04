@@ -42,6 +42,10 @@ app.use((req, res, next) => {
     next();
 });
 
+// Parse POST request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
