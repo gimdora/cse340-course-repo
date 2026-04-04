@@ -7,6 +7,8 @@ const getAllProjects = async () => {
             sp.organization_id,
             sp.name,
             sp.description,
+            sp.location,
+            sp."date" AS date,
             o.name AS organization_name
         FROM public.service_project sp
         JOIN public.organization o
@@ -24,7 +26,9 @@ const getProjectsByOrganizationId = async (organizationId) => {
             project_id,
             organization_id,
             name,
-            description
+            description,
+            location,
+            "date" AS date
         FROM public.service_project
         WHERE organization_id = $1
         ORDER BY project_id;
@@ -43,6 +47,8 @@ const getProjectDetails = async (projectId) => {
             sp.organization_id,
             sp.name,
             sp.description,
+            sp.location,
+            sp."date" AS date,
             o.name AS organization_name
         FROM public.service_project sp
         JOIN public.organization o
