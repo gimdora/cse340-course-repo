@@ -5,18 +5,26 @@
       <%= title %>
     </h1>
 
-    <h2>Service Project Categories</h2>
-    <p>Here are the categories from the database:</p>
+    <h2>Categories</h2>
+    <p>Browse the service categories from the database.</p>
 
-    <ul class="category-list">
-      <% categories.forEach(category=> { %>
-        <li class="category-item">
-          <a href="/category/<%= category.category_id %>">
-            <%= category.name %>
-          </a>
-        </li>
-        <% }) %>
-    </ul>
+    <p>
+      <a href="/new-category">Add a New Category</a>
+    </p>
+
+    <% if (categories.length===0) { %>
+      <p>No categories are available yet.</p>
+      <% } else { %>
+        <div class="category-list">
+          <% categories.forEach(category=> { %>
+            <div class="category-item">
+              <a href="/category/<%= category.category_id %>">
+                <%= category.name %>
+              </a>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
   </main>
 
   <%- include('partials/footer') %>

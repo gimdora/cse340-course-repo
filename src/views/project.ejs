@@ -28,9 +28,13 @@
 
                 <% if (projectDetails.date) { %>
                     <p><strong>Date:</strong>
-                        <%= projectDetails.date %>
+                        <%= String(projectDetails.date).split('T')[0] %>
                     </p>
                     <% } %>
+
+                        <p>
+                            <a href="/edit-project/<%= projectDetails.project_id %>">Edit Project</a>
+                        </p>
 
                         <p>
                             <a href="/assign-categories/<%= projectDetails.project_id %>">Edit Categories</a>
