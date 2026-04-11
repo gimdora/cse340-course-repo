@@ -14,12 +14,34 @@
   <header class="site-header">
     <nav class="nav">
       <a class="nav-link <%= path === '/' ? 'active' : '' %>" href="/">Home</a>
-      <a class="nav-link <%= path === '/organizations' || path.startsWith('/organization/') ? 'active' : '' %>"
-        href="/organizations">Organizations</a>
-      <a class="nav-link <%= path === '/projects' || path.startsWith('/project/') ? 'active' : '' %>"
-        href="/projects">Projects</a>
-      <a class="nav-link <%= path === '/categories' || path.startsWith('/category/') ? 'active' : '' %>"
-        href="/categories">Categories</a>
+
+      <a class="nav-link <%= path === '/organizations' || path.startsWith('/organization/') || path === '/new-organization' || path.startsWith('/edit-organization/') ? 'active' : '' %>"
+        href="/organizations">
+        Organizations
+      </a>
+
+      <a class="nav-link <%= path === '/projects' || path.startsWith('/project/') || path === '/new-project' || path.startsWith('/edit-project/') || path.startsWith('/assign-categories/') ? 'active' : '' %>"
+        href="/projects">
+        Projects
+      </a>
+
+      <a class="nav-link <%= path === '/categories' || path.startsWith('/category/') || path === '/new-category' || path.startsWith('/edit-category/') ? 'active' : '' %>"
+        href="/categories">
+        Categories
+      </a>
+
+      <% if (isLoggedIn) { %>
+        <a class="nav-link <%= path === '/dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+
+        <% if (isAdmin) { %>
+          <a class="nav-link <%= path === '/users' ? 'active' : '' %>" href="/users">Users</a>
+          <% } %>
+
+            <a class="nav-link" href="/logout">Logout</a>
+            <% } else { %>
+              <a class="nav-link <%= path === '/register' ? 'active' : '' %>" href="/register">Register</a>
+              <a class="nav-link <%= path === '/login' ? 'active' : '' %>" href="/login">Login</a>
+              <% } %>
     </nav>
   </header>
 

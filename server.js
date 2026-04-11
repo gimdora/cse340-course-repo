@@ -24,12 +24,19 @@ app.set('view engine', 'ejs');
 // Tell Express where to find your templates
 app.set('views', path.join(__dirname, 'src', 'views'));
 
+// Parse POST request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Set up session management
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60 * 60 * 1000 }
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true
+    }
 }));
 
 // Use flash message middleware
@@ -43,21 +50,15 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware to make NODE_ENV available to all templates
+// Middleware to make common variables available to all templates
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
-    next();
-});
-
-// Middleware to make the current path available to all templates
-app.use((req, res, next) => {
     res.locals.path = req.path;
+    res.locals.user = req.session?.user || null;
+    res.locals.isLoggedIn = Boolean(req.session?.user);
+    res.locals.isAdmin = req.session?.user?.role_name === 'admin';
     next();
 });
-
-// Parse POST request bodies
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));

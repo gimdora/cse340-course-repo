@@ -32,29 +32,28 @@
                     </p>
                     <% } %>
 
-                        <p>
-                            <a href="/edit-project/<%= projectDetails.project_id %>">Edit Project</a>
-                        </p>
+                        <% if (isAdmin) { %>
+                            <p>
+                                <a href="/edit-project/<%= projectDetails.project_id %>">Edit Project</a>
+                            </p>
+                            <p>
+                                <a href="/assign-categories/<%= projectDetails.project_id %>">Edit Categories</a>
+                            </p>
+                            <% } %>
 
-                        <p>
-                            <a href="/assign-categories/<%= projectDetails.project_id %>">Edit Categories</a>
-                        </p>
+                                <h3>Categories</h3>
 
-                        <h3>Categories</h3>
-
-                        <% if (categories.length===0) { %>
-                            <p>No categories are assigned to this project yet.</p>
-                            <% } else { %>
-                                <div class="category-list">
-                                    <% categories.forEach(category=> { %>
-                                        <div class="category-item">
-                                            <a href="/category/<%= category.category_id %>">
-                                                <%= category.name %>
-                                            </a>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                                <% } %>
+                                <% if (categories.length===0) { %>
+                                    <p>No categories are assigned to this project yet.</p>
+                                    <% } else { %>
+                                        <% categories.forEach(category=> { %>
+                                            <p>
+                                                <a href="/category/<%= category.category_id %>">
+                                                    <%= category.name %>
+                                                </a>
+                                            </p>
+                                            <% }) %>
+                                                <% } %>
     </main>
 
     <%- include('partials/footer') %>

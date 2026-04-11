@@ -8,32 +8,32 @@
         <h2>Service Projects</h2>
         <p>Here are the service projects from the database:</p>
 
-        <p>
-            <a href="/new-project">Add a New Service Project</a>
-        </p>
+        <% if (isAdmin) { %>
+            <p><a href="/new-project">Add a New Service Project</a></p>
+            <% } %>
 
-        <% if (projects.length===0) { %>
-            <p>No service projects are available yet.</p>
-            <% } else { %>
-                <ul class="project-list">
-                    <% projects.forEach(project=> { %>
-                        <li class="project-item">
-                            <strong>
-                                <a href="/project/<%= project.project_id %>">
-                                    <%= project.name %>
-                                </a>
-                            </strong>
-                            -
-                            <a href="/organization/<%= project.organization_id %>">
-                                <%= project.organization_name %>
-                            </a>
-                            <p>
-                                <%= project.description %>
-                            </p>
-                        </li>
-                        <% }) %>
-                </ul>
-                <% } %>
+                <% if (projects.length===0) { %>
+                    <p>No service projects are available yet.</p>
+                    <% } else { %>
+                        <% projects.forEach(project=> { %>
+                            <div>
+                                <h3>
+                                    <a href="/project/<%= project.project_id %>">
+                                        <%= project.name %>
+                                    </a>
+                                </h3>
+                                <p>
+                                    <strong>Organization:</strong>
+                                    <a href="/organization/<%= project.organization_id %>">
+                                        <%= project.organization_name %>
+                                    </a>
+                                </p>
+                                <p>
+                                    <%= project.description %>
+                                </p>
+                            </div>
+                            <% }) %>
+                                <% } %>
     </main>
 
     <%- include('partials/footer') %>
