@@ -8,28 +8,25 @@
     <h2>Welcome to the CSE 340 Service Network!</h2>
     <p>Here are a few of our partner organizations:</p>
 
-    <ul class="org-list">
-      <% organizations.forEach(organization=> { %>
-        <li class="org-item">
-          <img class="org-logo" src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo">
+    <% if (isAdmin) { %>
+      <p><a href="/new-organization">Add a new organization</a></p>
+      <% } %>
 
-          <strong>
-            <a href="/organization/<%= organization.organization_id %>">
-              <%= organization.name %>
-            </a>
-          </strong>
-
-          : <%= organization.contact_email %>
+        <% organizations.forEach(organization=> { %>
+          <div>
+            <h3>
+              <a href="/organization/<%= organization.organization_id %>">
+                <%= organization.name %>
+              </a>
+            </h3>
+            <p><strong>Email:</strong>
+              <%= organization.contact_email %>
+            </p>
             <p>
               <%= organization.description %>
             </p>
-        </li>
-        <% }) %>
-    </ul>
-
-    <p>
-      <a href="/new-organization">Add a new organization</a>
-    </p>
+          </div>
+          <% }) %>
   </main>
 
   <%- include('partials/footer') %>
