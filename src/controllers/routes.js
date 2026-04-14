@@ -12,6 +12,8 @@ import {
 import {
     showProjectsPage,
     showProjectDetailsPage,
+    processVolunteerForProject,
+    processUnvolunteerForProject,
     showNewProjectForm,
     processNewProjectForm,
     showEditProjectForm,
@@ -72,6 +74,8 @@ router.post('/edit-organization/:id', requireRole('admin'), organizationValidati
 // Project routes
 router.get('/projects', showProjectsPage);
 router.get('/project/:id', showProjectDetailsPage);
+router.post('/project/:id/volunteer', requireLogin, processVolunteerForProject);
+router.post('/project/:id/unvolunteer', requireLogin, processUnvolunteerForProject);
 router.get('/new-project', requireRole('admin'), showNewProjectForm);
 router.post('/new-project', requireRole('admin'), projectValidation, processNewProjectForm);
 router.get('/edit-project/:id', requireRole('admin'), showEditProjectForm);

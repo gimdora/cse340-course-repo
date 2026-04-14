@@ -26,14 +26,6 @@ CREATE TABLE service_project (
     organization_id INTEGER NOT NULL,
     name VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
--- ========================================
--- Service Project Table
--- ========================================
-CREATE TABLE service_project (
-    project_id SERIAL PRIMARY KEY,
-    organization_id INTEGER NOT NULL,
-    name VARCHAR(150) NOT NULL,
-    description TEXT NOT NULL,
     location VARCHAR(200),
     "date" DATE,
     FOREIGN KEY (organization_id) REFERENCES organization(organization_id)
@@ -132,4 +124,16 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     role_id INTEGER NOT NULL REFERENCES roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ========================================
+-- Project Volunteer Table
+-- ========================================
+CREATE TABLE project_volunteer (
+    user_id INTEGER NOT NULL,
+    project_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, project_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES service_project(project_id) ON DELETE CASCADE
 );

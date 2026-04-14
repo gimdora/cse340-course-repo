@@ -1,59 +1,76 @@
 <%- include('partials/header') %>
 
-    <main>
-        <h1>
-            <%= title %>
-        </h1>
+<main>
+    <h1><%= title %></h1>
 
-        <h2>
-            <%= projectDetails.name %>
-        </h2>
+    <h2><%= projectDetails.name %></h2>
 
+    <p>
+        <strong>Partner Organization:</strong>
+        <a href="/organization/<%= projectDetails.organization_id %>">
+            <%= projectDetails.organization_name %>
+        </a>
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        <%= projectDetails.description %>
+    </p>
+
+    <% if (projectDetails.location) { %>
         <p>
-            <strong>Partner Organization:</strong>
-            <a href="/organization/<%= projectDetails.organization_id %>">
-                <%= projectDetails.organization_name %>
-            </a>
+            <strong>Location:</strong>
+            <%= projectDetails.location %>
         </p>
+    <% } %>
 
-        <p><strong>Description:</strong>
-            <%= projectDetails.description %>
+    <% if (projectDetails.date) { %>
+        <p>
+            <strong>Date:</strong>
+            <%= String(projectDetails.date).split('T')[0] %>
         </p>
+    <% } %>
 
-        <% if (projectDetails.location) { %>
-            <p><strong>Location:</strong>
-                <%= projectDetails.location %>
+    <% if (isLoggedIn) { %>
+        <h3>Volunteer</h3>
+
+        <% if (isVolunteering) { %>
+            <p>You are volunteering for this project.</p>
+
+            <form action="/project/<%= projectDetails.project_id %>/unvolunteer" method="post">
+                <input type="hidden" name="returnTo" value="/project/<%= projectDetails.project_id %>">
+                <button type="submit">Remove Me as Volunteer</button>
+            </form>
+        <% } else { %>
+            <form action="/project/<%= projectDetails.project_id %>/volunteer" method="post">
+                <input type="hidden" name="returnTo" value="/project/<%= projectDetails.project_id %>">
+                <button type="submit">Volunteer for This Project</button>
+            </form>
+        <% } %>
+    <% } %>
+
+    <% if (isAdmin) { %>
+        <p>
+            <a href="/edit-project/<%= projectDetails.project_id %>">Edit Project</a>
+        </p>
+        <p>
+            <a href="/assign-categories/<%= projectDetails.project_id %>">Edit Categories</a>
+        </p>
+    <% } %>
+
+    <h3>Categories</h3>
+
+    <% if (categories.length === 0) { %>
+        <p>No categories are assigned to this project yet.</p>
+    <% } else { %>
+        <% categories.forEach(category => { %>
+            <p>
+                <a href="/category/<%= category.category_id %>">
+                    <%= category.name %>
+                </a>
             </p>
-            <% } %>
+        <% }) %>
+    <% } %>
+</main>
 
-                <% if (projectDetails.date) { %>
-                    <p><strong>Date:</strong>
-                        <%= String(projectDetails.date).split('T')[0] %>
-                    </p>
-                    <% } %>
-
-                        <% if (isAdmin) { %>
-                            <p>
-                                <a href="/edit-project/<%= projectDetails.project_id %>">Edit Project</a>
-                            </p>
-                            <p>
-                                <a href="/assign-categories/<%= projectDetails.project_id %>">Edit Categories</a>
-                            </p>
-                            <% } %>
-
-                                <h3>Categories</h3>
-
-                                <% if (categories.length===0) { %>
-                                    <p>No categories are assigned to this project yet.</p>
-                                    <% } else { %>
-                                        <% categories.forEach(category=> { %>
-                                            <p>
-                                                <a href="/category/<%= category.category_id %>">
-                                                    <%= category.name %>
-                                                </a>
-                                            </p>
-                                            <% }) %>
-                                                <% } %>
-    </main>
-
-    <%- include('partials/footer') %>
+<%- include('partials/footer') %>

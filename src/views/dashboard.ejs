@@ -1,21 +1,60 @@
 <%- include('partials/header') %>
 
-    <main>
-        <h1>
-            <%= title %>
-        </h1>
+<main>
+    <h1><%= title %></h1>
 
-        <h2>Dashboard</h2>
-        <p>Name: <%= name %>
-        </p>
-        <p>Username: <%= email %>
-        </p>
-        <p>Role: <%= user.role_name %>
-        </p>
+    <h2>Dashboard</h2>
+    <p>Name: <%= name %></p>
+    <p>Email: <%= email %></p>
+    <p>Role: <%= user.role_name %></p>
 
-        <% if (isAdmin) { %>
-            <p><a href="/users">View All Users</a></p>
-            <% } %>
-    </main>
+    <% if (isAdmin) { %>
+        <p><a href="/users">View All Users</a></p>
+    <% } %>
 
-    <%- include('partials/footer') %>
+    <h3>My Volunteer Projects</h3>
+
+    <% if (!volunteerProjects || volunteerProjects.length === 0) { %>
+        <p>You have not volunteered for any projects yet.</p>
+    <% } else { %>
+        <% volunteerProjects.forEach(project => { %>
+            <div>
+                <h4>
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.name %>
+                    </a>
+                </h4>
+
+                <p>
+                    <strong>Organization:</strong>
+                    <a href="/organization/<%= project.organization_id %>">
+                        <%= project.organization_name %>
+                    </a>
+                </p>
+
+                <p><%= project.description %></p>
+
+                <% if (project.location) { %>
+                    <p>
+                        <strong>Location:</strong>
+                        <%= project.location %>
+                    </p>
+                <% } %>
+
+                <% if (project.date) { %>
+                    <p>
+                        <strong>Date:</strong>
+                        <%= String(project.date).split('T')[0] %>
+                    </p>
+                <% } %>
+
+                <form action="/project/<%= project.project_id %>/unvolunteer" method="post">
+                    <input type="hidden" name="returnTo" value="/dashboard">
+                    <button type="submit">Remove Me as Volunteer</button>
+                </form>
+            </div>
+        <% }) %>
+    <% } %>
+</main>
+
+<%- include('partials/footer') %>

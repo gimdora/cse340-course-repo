@@ -34,8 +34,8 @@ const getProjectsByOrganizationId = async (organizationId) => {
         ORDER BY project_id;
     `;
 
-    const query_params = [organizationId];
-    const result = await db.query(query, query_params);
+    const queryParams = [organizationId];
+    const result = await db.query(query, queryParams);
 
     return result.rows;
 };
@@ -56,8 +56,8 @@ const getProjectDetails = async (projectId) => {
         WHERE sp.project_id = $1;
     `;
 
-    const query_params = [projectId];
-    const result = await db.query(query, query_params);
+    const queryParams = [projectId];
+    const result = await db.query(query, queryParams);
 
     return result.rows.length > 0 ? result.rows[0] : null;
 };
@@ -74,8 +74,75 @@ const getCategoriesByProjectId = async (projectId) => {
         ORDER BY c.category_id;
     `;
 
-    const query_params = [projectId];
-    const result = await db.query(query, query_params);
+    const queryParams = [projectId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows;
+};
+
+const isUserVolunteeringForProject = async (userId, projectId) => {
+    const query = `
+        SELECT 1
+        FROM public.project_volunteer
+        WHERE user_id = $1
+          AND project_id = $2;
+    `;
+
+    const queryParams = [userId, projectId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows.length > 0;
+};
+
+const addVolunteerToProject = async (userId, projectId) => {
+    const query = `
+        INSERT INTO public.project_volunteer (user_id, project_id)
+        VALUES ($1, $2)
+        ON CONFLICT (user_id, project_id) DO NOTHING
+        RETURNING user_id, project_id;
+    `;
+
+    const queryParams = [userId, projectId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows.length > 0;
+};
+
+const removeVolunteerFromProject = async (userId, projectId) => {
+    const query = `
+        DELETE FROM public.project_volunteer
+        WHERE user_id = $1
+          AND project_id = $2
+        RETURNING user_id, project_id;
+    `;
+
+    const queryParams = [userId, projectId];
+    const result = await db.query(query, queryParams);
+
+    return result.rows.length > 0;
+};
+
+const getVolunteerProjectsByUserId = async (userId) => {
+    const query = `
+        SELECT
+            sp.project_id,
+            sp.organization_id,
+            sp.name,
+            sp.description,
+            sp.location,
+            sp."date" AS date,
+            o.name AS organization_name
+        FROM public.project_volunteer pv
+        JOIN public.service_project sp
+            ON pv.project_id = sp.project_id
+        JOIN public.organization o
+            ON sp.organization_id = o.organization_id
+        WHERE pv.user_id = $1
+        ORDER BY sp."date" ASC NULLS LAST, sp.project_id DESC;
+    `;
+
+    const queryParams = [userId];
+    const result = await db.query(query, queryParams);
 
     return result.rows;
 };
@@ -87,8 +154,8 @@ const createProject = async (title, description, location, date, organizationId)
         RETURNING project_id;
     `;
 
-    const query_params = [title, description, location, date, organizationId];
-    const result = await db.query(query, query_params);
+    const queryParams = [title, description, location, date, organizationId];
+    const result = await db.query(query, queryParams);
 
     if (result.rows.length === 0) {
         throw new Error('Failed to create project');
@@ -110,8 +177,8 @@ const updateProject = async (projectId, title, description, location, date, orga
         RETURNING project_id;
     `;
 
-    const query_params = [title, description, location, date, organizationId, projectId];
-    const result = await db.query(query, query_params);
+    const queryParams = [title, description, location, date, organizationId, projectId];
+    const result = await db.query(query, queryParams);
 
     if (result.rows.length === 0) {
         throw new Error('Project not found');
@@ -125,6 +192,10 @@ export {
     getProjectsByOrganizationId,
     getProjectDetails,
     getCategoriesByProjectId,
+    isUserVolunteeringForProject,
+    addVolunteerToProject,
+    removeVolunteerFromProject,
+    getVolunteerProjectsByUserId,
     createProject,
     updateProject
 };
