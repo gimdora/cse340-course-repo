@@ -23,32 +23,40 @@ VALUES
 -- Service Project Table
 -- ========================================
 CREATE TABLE service_project (
-  project_id SERIAL PRIMARY KEY,
-  organization_id INTEGER NOT NULL,
-  name VARCHAR(150) NOT NULL,
-  description TEXT NOT NULL,
-  FOREIGN KEY (organization_id) REFERENCES organization(organization_id)
+    project_id SERIAL PRIMARY KEY,
+    organization_id INTEGER NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    location VARCHAR(200),
+    "date" DATE,
+    FOREIGN KEY (organization_id) REFERENCES organization(organization_id)
 );
 
 -- ========================================
 -- Insert data: Service Project
 -- ========================================
-INSERT INTO service_project (organization_id, name, description)
+INSERT INTO service_project (organization_id, name, description, location, "date")
 VALUES
 (
-  1,
-  'Community Playground Build',
-  'Help build and improve safe playground spaces for local children and families.'
+    1,
+    'Community Playground Build',
+    'Help build and improve safe playground spaces for local children and families.',
+    'Boise Community Park',
+    '2026-05-10'
 ),
 (
-  2,
-  'Neighborhood Garden Program',
-  'Support urban gardening projects that provide fresh food and community education.'
+    2,
+    'Neighborhood Garden Program',
+    'Support urban gardening projects that provide fresh food and community education.',
+    'Downtown Urban Garden',
+    '2026-05-17'
 ),
 (
-  3,
-  'Charity Event Support',
-  'Assist with volunteer coordination and event support for local charity programs.'
+    3,
+    'Charity Event Support',
+    'Assist with volunteer coordination and event support for local charity programs.',
+    'City Volunteer Center',
+    '2026-05-24'
 );
 
 -- ========================================
